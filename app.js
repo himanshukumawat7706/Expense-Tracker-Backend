@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const allowedOrigins = "https://hket.vercel.app"|| "http://localhost:3000"
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: "https://hket.vercel.app",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
