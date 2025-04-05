@@ -23,23 +23,21 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // CORS configuration
-const allowedOrigins = "https://hket.vercel.app"|| "http://localhost:3000"
+const allowedOrigins = ["https://hket.vercel.app", "http://localhost:3000"];
+
 app.use(
   cors({
-    origin: "https://hket.vercel.app",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
-
-// Log request details for debugging
-if (process.env.NODE_ENV !== "production") {
-  app.use((req, res, next) => {
-    console.log(`Request Origin: ${req.headers.origin}`);
-    console.log(`Request Method: ${req.method}`);
-    next();
-  });
-}
 
 // Routers
 app.use("/api/v1", transactionRoutes);
