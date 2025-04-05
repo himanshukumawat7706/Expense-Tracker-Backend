@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // CORS configuration
-const allowedOrigins = "https://hket.vercel.app"
+const allowedOrigins = [process.env.CLIENT_URL || "http://localhost:3000"];
 
 app.use(
   cors({
@@ -36,7 +36,6 @@ app.use(
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allow common HTTP methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
   })
 );
 
