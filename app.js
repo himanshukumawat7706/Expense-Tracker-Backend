@@ -51,7 +51,7 @@ app.get("/", (req, res) => {
 });
 
 // Dynamic port for deployment
-const PORT = process.env.PORT || 5000;
-app.listen("https://hketback.vercel.app", () => {
+const PORT = 5000;
+app.listen(PORT, () => {
   console.log(`Server is listening on http://localhost:${PORT}`);
 });
