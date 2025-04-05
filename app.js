@@ -7,47 +7,51 @@ import helmet from "helmet";
 import morgan from "morgan";
 import transactionRoutes from "./Routers/Transactions.js";
 import userRoutes from "./Routers/userRouter.js";
-import path from "path";
 
 dotenv.config({ path: "./config/config.env" });
 const app = express();
 
-const port = process.env.PORT;
-
+// Connect to the database
 connectDB();
-
-const allowedOrigins = [
-  "http://localhost:3000","https://expense-tracker-app-knl1.onrender.com",
-];
 
 // Middleware
 app.use(express.json());
+app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
+app.use(morgan("combined")); // Use 'combined' for better logging in production
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// CORS configuration
+const allowedOrigins = "https://hket.vercel.app"|| "http://localhost:3000"
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
-app.use((req, res, next) => {
-  console.log(`Request Origin: ${req.headers.origin}`);
-  console.log(`Request Method: ${req.method}`);
-  next();
-});
-app.use(helmet());
-app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
-app.use(morgan("dev"));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
 
-// Router
+// Log request details for debugging
+if (process.env.NODE_ENV !== "production") {
+  app.use((req, res, next) => {
+    console.log(`Request Origin: ${req.headers.origin}`);
+    console.log(`Request Method: ${req.method}`);
+    next();
+  });
+}
+
+// Routers
 app.use("/api/v1", transactionRoutes);
 app.use("/api/auth", userRoutes);
 
+// Default route
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("API is running...");
 });
 
-app.listen(5000, () => {
-  console.log(`Server is listening on http://localhost:5000`);
+// Dynamic port for deployment
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server is listening on http://localhost:${PORT}`);
 });
