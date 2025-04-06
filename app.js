@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(
   cors({
-    origin: "*",
+    origin: "https://expense-tracker-frontend-swart-two.vercel.app/",
     credentials: true,
   })
 );
